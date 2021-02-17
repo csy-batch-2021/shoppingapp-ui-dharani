@@ -51,7 +51,7 @@ function placeOrder(productId) {
     console.log("placing order", productId);
     // let loggedInUser = JSON.parse(localStorage.getItem("LOGGED_IN_USER"));
     // let userId = loggedInUser.id;
-    let orderObj = { productId: productId, qty: 1, userId: 1 };
+    let orderObj = { productId: productId, qty: 1, userId: 2 };
     console.log(orderObj);
     // const productOrderAPI = new ProductOrderAPI();
     let url = "http://localhost:3000/addOrder";

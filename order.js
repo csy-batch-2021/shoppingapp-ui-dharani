@@ -5,9 +5,9 @@ function loadProducts() {
     // let loggedInUser = JSON.parse(localStorage.getItem("LOGGED_IN_USER"));
     // let userId = loggedInUser.id;
     let userId = 1;
-    let url = "http://localhost:3000/myorders";
+    let url = "http://localhost:3000/myorders?userId=" + userId;
 
-    axios.post(url, { userId }).then(response => {
+    axios.get(url).then(response => {
         console.table(response.data);
         displayProducts(response.data);
     });
@@ -24,19 +24,20 @@ function displayProducts(products) {
     let content = "";
     let i = 1;
 
-    console.log("products", products.length);
+    // console.log("products", products.length);
     if (products.length != 0) {
         for (let p of products) {
 
             let temp = ` <tr>
         <td>${i}</td>
-        <td>${p.user_id}</td>
-        <td>${p.product_id}</td>
+        <td>${p.user_name}</td>
+        <td>${p.name}</td>
+        <td>${p.price}</td>        
         <td>${p.qty}</td>
         <td>${p.total_amount}</td>
         <td>${p.status}</td>
         
-        <td><button type="button" onsubmit="newOrder()" id="order-btn1" data-product-id=${p.id}>Cancel</button>
+        <td><button type="button"  id="order-btn1" data-product-id=${p.id}>Cancel</button>
     </tr>`;
 
             content += temp;
@@ -51,12 +52,33 @@ function displayProducts(products) {
 
     //Assign Listeners
     document.querySelectorAll("#order-btn1").forEach(element => {
-        let productId = parseInt(element.getAttribute("data-product-id"));
-        console.log(productId);
+        let orderId = parseInt(element.getAttribute("data-product-id"));
+        console.log("productId", orderId);
         element.addEventListener('click', e => {
-            placeOrder(productId);
+            cancelOrder(orderId);
+
         });
     });
+
+    function cancelOrder(orderId) {
+
+        console.log(orderId);
+
+        let url = "http://localhost:3000/cancelOrder?orderId=" + orderId;
+
+        axios.patch(url, null).then(response => {
+            // productOrderAPI.orderProduct(orderObj).then(response => {
+            console.log(response.data);
+            document.getElementById("errorMessage").innerHTML = response.data;
+            // window.location.href = "orders.html";
+
+        }).catch(err => {
+            // console.error("Erroro", );   
+
+            document.getElementById("errorMessage").innerHTML = err.response.data.message;
+        });
+
+    }
 
 }
 
